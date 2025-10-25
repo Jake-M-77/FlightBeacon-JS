@@ -1,0 +1,15 @@
+# Docker
+*.env
+docker-compose.override.yml
+*.log
+
+# Node & React (if not covered in frontend/.gitignore)
+node_modules/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
