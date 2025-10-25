@@ -67,14 +67,14 @@ services:
       - flight-network
 
   # --------- OPENSKY API ---------
-  # opensky-api:
-  #   build: ./backend/opensky-api
-  #   ports:
-  #     - "3002:3000"
-  #   environment:
-  #     - PORT=3000
-  #   networks:
-  #     - flight-network
+  opensky-api:
+    build: ./backend/opensky-api
+    ports:
+      - "3002:3000"
+    environment:
+      - PORT=3000
+    networks:
+      - flight-network
 
   # --------- MYSQL DATABASE ---------
   user-db:
