@@ -1,0 +1,104 @@
+version: "3.9"
+
+networks:
+  flight-network:
+    driver: bridge
+
+services:
+  # --------- FRONTEND (PROD) ---------
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"  # NGINX production
+    depends_on:
+      - user-api
+      # - flights-api
+      # - opensky-api
+    networks:
+      - flight-network
+
+  # --------- FRONTEND (DEV) ---------
+  frontend-dev:
+    build: ./frontend
+    command: npm run dev   # runs Vite dev server
+    ports:
+      - "5174:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # for hot reload on Docker
+    volumes:
+      - ./frontend:/app          # bind mount so changes are live
+      - /app/node_modules        # ignore container node_modules
+    networks:
+      - flight-network
+    depends_on:
+      - user-api
+      # - flights-api
+      # - opensky-api
+
+  # --------- USER API (MySQL) ---------
+  user-api:
+    build: ./backend/user-api
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=mysql://root:admin123@user-db:3306/userDB
+    depends_on:
+      - user-db
+    networks:
+      - flight-network
+
+  # --------- FLIGHTS API (PostgreSQL) ---------
+  # flights-api:
+  #   build: ./backend/flights-api
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     - PORT=3000
+  #     - DATABASE_URL=postgresql://postgres:admin123@flights-db:5432/flightDB
+  #   depends_on:
+  #     - flights-db
+  #   networks:
+  #     - flight-network
+
+  # --------- OPENSKY API ---------
+  # opensky-api:
+  #   build: ./backend/opensky-api
+  #   ports:
+  #     - "3002:3000"
+  #   environment:
+  #     - PORT=3000
+  #   networks:
+  #     - flight-network
+
+  # --------- MYSQL DATABASE ---------
+  user-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: userDB
+    ports:
+      - "3306:3306"
+    networks:
+      - flight-network
+    volumes:
+      - user-db-data:/var/lib/mysql
+
+  # --------- POSTGRES DATABASE ---------
+  # flights-db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: admin123
+  #     POSTGRES_DB: flightDB
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - flight-network
+  #   volumes:
+  #     - flights-db-data:/var/lib/postgresql/data
+
+# --------- VOLUMES ---------
+volumes:
+  user-db-data:
+  # flights-db-data:
