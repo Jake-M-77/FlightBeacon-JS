@@ -7,7 +7,10 @@ networks:
 services:
   # --------- FRONTEND (PROD) ---------
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend/flight-ui
+      dockerfile: Dockerfile
+    container_name: frontend-prod
     ports:
       - "5173:80"  # NGINX production
     depends_on:
@@ -19,7 +22,10 @@ services:
 
   # --------- FRONTEND (DEV) ---------
   frontend-dev:
-    build: ./frontend
+    build:
+      context: ./frontend/flight-ui
+      dockerfile: Dockerfile.dev 
+    container_name: frontend-dev
     command: npm run dev   # runs Vite dev server
     ports:
       - "5174:5173"
