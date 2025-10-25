@@ -1,4 +1,3 @@
-version: "3.9"
 
 networks:
   flight-network:
@@ -55,17 +54,17 @@ services:
       - flight-network
 
   # --------- FLIGHTS API (PostgreSQL) ---------
-  # flights-api:
-  #   build: ./backend/flights-api
-  #   ports:
-  #     - "3001:3000"
-  #   environment:
-  #     - PORT=3000
-  #     - DATABASE_URL=postgresql://postgres:admin123@flights-db:5432/flightDB
-  #   depends_on:
-  #     - flights-db
-  #   networks:
-  #     - flight-network
+  flights-api:
+    build: ./backend/flights-api
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:admin123@flights-db:5432/flightDB
+    depends_on:
+      - flights-db
+    networks:
+      - flight-network
 
   # --------- OPENSKY API ---------
   # opensky-api:
@@ -91,20 +90,20 @@ services:
       - user-db-data:/var/lib/mysql
 
   # --------- POSTGRES DATABASE ---------
-  # flights-db:
-  #   image: postgres:15
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: admin123
-  #     POSTGRES_DB: flightDB
-  #   ports:
-  #     - "5432:5432"
-  #   networks:
-  #     - flight-network
-  #   volumes:
-  #     - flights-db-data:/var/lib/postgresql/data
+  flights-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: flightDB
+    ports:
+      - "5432:5432"
+    networks:
+      - flight-network
+    volumes:
+      - flights-db-data:/var/lib/postgresql/data
 
 # --------- VOLUMES ---------
 volumes:
   user-db-data:
-  # flights-db-data:
+  flights-db-data:

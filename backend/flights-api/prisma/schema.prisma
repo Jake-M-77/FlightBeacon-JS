@@ -5,11 +5,86 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+
+model FlightData {
+
+  id Int @id @default(autoincrement())
+  icao24  String?
+  callsign  String?
+  timePosition Int?
+  longitude Float?
+  latitude Float?
+  baroAltitude Float?
+  onGround Boolean?
+  velocity Float?
+  trueTrack Float?
+  verticalRate Float?
+  sensors Int?
+  geoAltitude Float?
+  squawk String?
+  spi Boolean?
+  positionSource PositionSource?
+  category AircraftCategory?
+  firstSeen Int?
+  estDepatureAirport String?
+  lastSeen Int?
+  estArrivalAirport String?
+  estDepatureAirportHorizDistance Int?
+  estDepatureAirportVertDistance Int?
+  estArrivalAirportHorizDistance Int?
+  estArrivalAirportVertDistance Int?
+  departureAirportCandidatesCount Int?
+  arrivalAirportCandidatesCount Int?
+
+   // ---------- Indexes ----------
+  @@index([icao24])                                  // Query by aircraft
+  @@index([estDepatureAirport])                      // Query departures
+  @@index([estArrivalAirport])                        // Query arrivals
+  @@index([estDepatureAirport, firstSeen])           // Departures by airport + time
+  @@index([estArrivalAirport, lastSeen])             // Arrivals by airport + time
+  @@index([latitude, longitude])                     // Bounding box queries
+  @@index([category])                                // Search by AircraftCategory
+  @@index([onGround])                                // Search by onGround
+
+
+
+}
+
+enum PositionSource {
+  ADSB
+  ASTERIX
+  MLAT
+  FLARM
+}
+
+enum AircraftCategory {
+  NoInformation
+  No_ADSBEmitterCategoryInformation
+  Light
+  Small
+  Large
+  HighVortexLarge
+  Heavy
+  HighPerformance
+  Rotorcraft
+  GliderSailplane
+  LighterThanAir
+  ParachutistSkydiver
+  UltralightHanggliderParaglider
+  Reserved
+  UnmannedAerialVehicle
+  SpaceTransAtmosphericVehicle
+  SurfaceVehicleEmergencyVehicle
+  SurfaceVehicleServiceVehicle
+  PointObstacle
+  ClusterObstacle
+  LineObstacle
 }
