@@ -21,7 +21,7 @@ RUN npx dotenv -e .env -- npx prisma generate
 
 
 # Expose the port your server will run on
-EXPOSE 3000
+EXPOSE 3001
 
 
 
