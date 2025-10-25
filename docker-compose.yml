@@ -31,7 +31,7 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true  # for hot reload on Docker
     volumes:
-      - ./frontend:/app          # bind mount so changes are live
+      - ./frontend/flight-ui:/app          # bind mount so changes are live
       - /app/node_modules        # ignore container node_modules
     networks:
       - flight-network
