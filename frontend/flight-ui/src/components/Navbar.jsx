@@ -24,6 +24,8 @@ function Navbar() {
                 {user ? (<li><Link to='/dashboard'>Dashboard</Link></li>) : (<li><Link to='/login'>Login</Link></li>)}
 
                 {!user && <li><Link to='/signup'>SignUp</Link></li>}
+
+                {user && <li>Welcome, {user.username}</li>}
                 
 
             </ul>

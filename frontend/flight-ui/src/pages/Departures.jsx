@@ -1,7 +1,38 @@
 import { useState } from "react";
 import './Departures.css';
+import { useUser } from "../Context/UserContext";
+import { useAuth } from "../Context/AuthContext";
+import axios from "axios";
+import DataBox from "../components/DataBox";
 
 function Departures() {
+
+    const { user } = useUser();
+    const { token, saveToken } = useAuth();
+
+    const [departureData, setDepartureData] = useState([]);
+
+
+    async function fetchToken() {
+        if (!user) {
+            return console.error('Please sign in!')
+        }
+
+        try {
+            const userResponse = await axios.get(`http://localhost:3000/api/user/${user.id}`);
+            const { clientId, clientSecret } = userResponse.data;
+
+            const authResponse = await axios.post('http://localhost:3002/api/auth', { clientId, clientSecret });
+            const openSkyToken = authResponse.data.token;
+
+            saveToken(openSkyToken);
+            return openSkyToken;
+        } catch (err) {
+            console.error('Error fetching token', err);
+        }
+    }
+
+
 
     const popularAirports = [
         { name: 'Select an airport', icao: "NULL" },
@@ -20,11 +51,33 @@ function Departures() {
         return Math.floor(date.getTime() / 1000) - date.getTimezoneOffset() * 60;
     }
 
-    function GetDepartures(airport, begin, end) {
+    async function GetDepartures(airport, begin, end) {
         const epochbegin = toEpoch(begin);
         const epochend = toEpoch(end)
 
         console.log(epochbegin, epochend, airport)
+
+        let useToken = token;
+
+        if (!token) {
+            useToken = await fetchToken();
+
+        }
+
+
+        try {
+            const response = await axios.get('http://localhost:3002/api/departures', {
+                params: { airport, begin: epochbegin, end: epochend },
+                headers: { Authorization: `Bearer ${useToken}` }
+            });
+
+            console.log('Departures Data:', response.data);
+            setDepartureData(response.data);
+
+        } catch (err) {
+            console.error("Everything's going to plan. No, really, that was supposed to happen.")
+            console.error('Error fetching departures:', err.response?.data || err.message);
+        }
 
     }
 
@@ -74,7 +127,11 @@ function Departures() {
                 <p>{selectedDepartureAirport}</p>
 
 
+
             </div>
+
+            <DataBox title="Departures" data={departureData} />
+
 
 
 
