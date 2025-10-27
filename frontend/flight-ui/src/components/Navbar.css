@@ -1,0 +1,19 @@
+.navbar{
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    padding: 0.5rem 1rem;
+    background-color:rgba(105, 108, 109, 0.477);
+}
+
+
+.navbar-links{
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.logo{
+    height: 40px;
+}
+

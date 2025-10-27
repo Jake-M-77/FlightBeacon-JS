@@ -1,0 +1,31 @@
+.Arrivals-search-form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+
+select, input{
+    display: block;
+    align-items: center;
+    gap: 10px;
+}
+
+button{
+    width: 200px;
+    height: 50px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    background-color: hsla(0, 0%, 52%, 0.54);
+}
+
+button:hover{
+    background-color: hsla(0, 0%, 52%, 0.64);
+
+}
+
+button:active{
+    background-color: hsla(0, 0%, 52%, 0.84);
+
+}
